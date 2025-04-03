@@ -1,0 +1,107 @@
+-- Load Wizard UI Library
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
+
+-- Buat Window utama
+local Window = Library:NewWindow("Troll Is a Pinning Tower")
+
+-- Buat Tab (kategori menu utama)
+local Tab = Window:NewSection("Troll And Tp")
+
+-- Fungsi Teleport
+local function teleportTo(position)
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+
+    if humanoidRootPart then
+        humanoidRootPart.CFrame = CFrame.new(position)
+    end
+end
+
+-- Lokasi teleportasi untuk tombol manual
+local teleportLocations = {
+    Vector3.new(-35, 103, -6),   -- Lokasi Trolling 1
+    Vector3.new(296, 342, -8),   -- Lokasi End Obby
+    Vector3.new(37, 11, 55),     -- Lokasi Spawn
+}
+
+-- Lokasi teleportasi untuk "Troll Moment"
+local trollLocations = {
+    Vector3.new(-32, 103, 38),
+    Vector3.new(-33, 103, 26),
+    Vector3.new(-34, 102, 10)
+}
+
+-- Menyimpan posisi awal sebelum "Troll Moment" dimulai
+local originalPosition = nil
+
+-- Fungsi untuk teleportasi ke semua lokasi dalam loop
+local isTrollActive = false
+
+local function teleportLoop()
+    if originalPosition == nil then
+        local player = game.Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+
+        if humanoidRootPart then
+            originalPosition = humanoidRootPart.Position
+        end
+    end
+
+    while isTrollActive do
+        for _, position in ipairs(trollLocations) do
+            teleportTo(position)
+            wait(0.1)  -- Waktu jeda antar teleportasi (bisa diubah sesuai kebutuhan)
+        end
+    end
+end
+
+-- Tombol teleportasi ke lokasi tertentu
+Tab:CreateButton("TP location Trolling 1", function()
+    teleportTo(teleportLocations[1])
+end)
+
+Tab:CreateButton("TP End Obby", function()
+    teleportTo(teleportLocations[2])
+end)
+
+Tab:CreateButton("TP Spawn", function()
+    teleportTo(teleportLocations[3])
+end)
+
+-- **ON/OFF untuk teleportasi looping**
+Tab:CreateToggle("Troll Moment", function(state)
+    isTrollActive = state
+    print("Troll Moment Status: " .. tostring(isTrollActive))
+
+    if isTrollActive then
+        teleportLoop()
+    else
+        -- Kembali ke posisi awal saat dimatikan
+        if originalPosition then
+            teleportTo(originalPosition)
+        end
+    end
+end)
+
+-- **Tab Copy Link**
+local CopyTab = Window:NewSection("TT:Komtolmmek2")
+
+-- Link yang ingin disalin
+local link = "https://www.tiktok.com/@komtolmmek2?_t=ZS-8vDLDSEL7Uw&_r=1"
+
+-- Fungsi untuk menyalin link ke clipboard
+local function copyToClipboard()
+    if setclipboard then
+        setclipboard(link)
+        print("Link disalin: " .. link)
+    else
+        print("setclipboard tidak didukung di executor ini!")
+    end
+end
+
+-- Tombol untuk Copy Link
+CopyTab:CreateButton("Copy Link", function()
+    copyToClipboard()
+end)
