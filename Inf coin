@@ -1,0 +1,92 @@
+local Rayfield = loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
+
+local RS = game:GetService("ReplicatedStorage")
+local Players = game:GetService("Players")
+local TeleportService = game:GetService("TeleportService")
+local LocalPlayer = Players.LocalPlayer
+
+local autoSell = false
+local delayTime = 0.01
+
+for _, conn in pairs(getconnections(LocalPlayer.Idled)) do
+    conn:Disable()
+end
+
+LocalPlayer.OnTeleport:Connect(function(state)
+    if state == Enum.TeleportState.Failed or state == Enum.TeleportState.InProgress then
+        task.wait(2)
+        TeleportService:Teleport(game.PlaceId, LocalPlayer)
+    end
+end)
+
+-- UI Setup
+local Window = Rayfield:CreateWindow({
+	Name = "komtolmmek2 script",
+	LoadingTitle = "Thanks for using my script",
+	LoadingSubtitle = "by Komtolmmek2 script",
+	ConfigurationSaving = {
+		Enabled = false
+	}
+})
+
+local MainTab = Window:CreateTab("Main", 4483362458)
+
+-- Toggle Infinite Coin
+MainTab:CreateToggle({
+	Name = "Infinite Coin",
+	CurrentValue = false,
+	Flag = "InfCoinToggle",
+	Callback = function(Value)
+		autoSell = Value
+		Rayfield:Notify({
+			Title = "Infinite coin status",
+			Content = Value and "Enabled!" or "Disabled!",
+			Duration = 2
+		})
+	end,
+})
+
+MainTab:CreateInput({
+	Name = "Delay (seconds, e.g. 0.01)",
+	PlaceholderText = "Set delay",
+	RemoveTextAfterFocusLost = true,
+	Callback = function(Text)
+		local num = tonumber(Text)
+		if num then
+			delayTime = num
+			Rayfield:Notify({
+				Title = "Delay Updated",
+				Content = "Delay set to " .. delayTime .. " seconds",
+				Duration = 3
+			})
+		else
+			Rayfield:Notify({
+				Title = "Invalid Input",
+				Content = "Please enter a valid number like 0.01",
+				Duration = 3
+			})
+		end
+	end,
+})
+
+task.spawn(function()
+	while true do
+		if autoSell then
+			for _, player in ipairs(Players:GetPlayers()) do
+				local folder = workspace:FindFirstChild(player.Name)
+				if folder then
+					for _, obj in ipairs(folder:GetChildren()) do
+						if typeof(obj) == "Instance" and obj.Name:match("%[.-%] %[-.-%]") then
+							task.spawn(function()
+								pcall(function()
+									RS.GameEvents.SellPet_RE:FireServer(obj)
+								end)
+							end)
+						end
+					end
+				end
+			end
+		end
+		task.wait(delayTime)
+	end
+end)
