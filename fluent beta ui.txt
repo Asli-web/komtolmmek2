@@ -6465,7 +6465,7 @@ local InterfaceManager = {} do
 	function InterfaceManager:SaveSettings()
 		writefile(self.Folder .. "/options.json", httpService:JSONEncode(InterfaceManager.Settings))
 	end
---
+
 BackgroundTransparency = Value * 0.3
 		end
 	end
