@@ -1,4 +1,4 @@
 local Games = {
-  [131378148336503] = "https://raw.githubusercontent.com/Asli-web/komtolmmek2/refs/heads/main/Drag%20Drive%20simulator", --Drag Drive Simulator
+  [7089588429] = "https://raw.githubusercontent.com/Asli-web/komtolmmek2/refs/heads/main/Drag%20Drive%20simulator", --Drag Drive Simulator
 }
 return Games
